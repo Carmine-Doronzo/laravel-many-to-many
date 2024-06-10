@@ -27,6 +27,22 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Seleziona le tecnologie di sviluppo</label>
+                    <div class="d-flex gap-2">
+                        @foreach ($technologies as $technology)
+
+                            <div class="form-check">
+                                <input @checked(in_array($technology->id,old('technologies',$project->technologies->pluck('id')->all()))) type="checkbox" class="form-check-input" id="technology-{{$technology->id}}" value="{{$technology->id}}" name="technologies[]">
+                                <label for="technologies{{$technology->id}}" class="form-check-label">
+                                    {{$technology->name}}
+                                </label>
+                            </div>
+                            
+                        @endforeach
+                    </div>
+                </div>
+
 
                 <div class="mb-3">
                     <label for="github_url" class="form-label">Url github</label>

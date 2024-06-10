@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Technology;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+
 class ProjectController extends Controller
 {
     /**
@@ -18,7 +19,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::all();
-        return view('admin.projects.index',compact('projects'));
+        return view('admin.projects.index', compact('projects'));
     }
 
     /**
@@ -26,9 +27,9 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $types = Type::orderby('name','asc')->get();
-        $technologies = Technology::orderBy('name','asc')->get();
-        return view('admin.projects.create',compact('types','technologies'));
+        $types = Type::orderby('name', 'asc')->get();
+        $technologies = Technology::orderBy('name', 'asc')->get();
+        return view('admin.projects.create', compact('types', 'technologies'));
     }
 
     /**
@@ -41,7 +42,7 @@ class ProjectController extends Controller
         //     'description' => 'nullable|max:10000',
         //     'github_url'=> 'required|max:200',
         // ]);
-        
+
         $form_data = $request->validated();
         $base_slug = Str::slug($form_data['name']);
         $slug = $base_slug;
@@ -58,12 +59,18 @@ class ProjectController extends Controller
             }
         } while ($find !== null);
 
-       
-        
+
+
 
         $form_data['slug'] = $slug;
 
+
+
+
         $new_project = Project::create($form_data);
+        if ($request->has('technologies')) {
+            $new_project->technologies()->attach($request->technologies);
+        }
         return to_route('admin.projects.show', $new_project);
     }
 
@@ -80,8 +87,10 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $types = Type::orderBy('name','asc')->get();
-        return view('admin.projects.edit', compact('project','types'));
+        $types = Type::orderBy('name', 'asc')->get();
+        $project->load(['technologies']);
+        $technologies = Technology::orderBy('name','asc')->get();
+        return view('admin.projects.edit', compact('project', 'types','technologies'));
     }
 
     /**
@@ -90,8 +99,15 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $form_data = $request->validated();
+        
         $project->update($form_data);
-        return to_route('admin.projects.show',$project);
+
+        if($request->has('technologies')){
+            $project->technologies()->sync($request->technologies);
+        }else{
+            $project->technologies()->detach();
+        }
+        return to_route('admin.projects.show', $project);
     }
 
     /**
@@ -99,7 +115,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        $project->technology()->detach();
+        //$project->technologies()->detach();
         $project->delete();
         return to_route('admin.projects.index');
     }
