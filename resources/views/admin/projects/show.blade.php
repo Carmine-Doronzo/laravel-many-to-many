@@ -73,22 +73,27 @@
     <div class="container">
         <div class="row">
             <ul>
-                @if ($project->type !== null )
-                @foreach ($project->type->projects as $rel_project )
-                    @if ($rel_project->name !== $project->name)
-                    <li>
-                        <a href="{{route('admin.projects.show',$rel_project)}}">{{$rel_project->name}}</a>
-                    </li>
-                    @endif    
-                @endforeach    
-                    
-                
+                {{-- @dd($project->type) --}}
+                @if ($project->type !== null)
+                    @foreach ($project->type->projects as $rel_project)
+                        @if ($rel_project->name !== $project->name)
+                            <li>
+                                <a href="{{ route('admin.projects.show', $rel_project) }}">{{ $rel_project->name }}</a>
+                            </li>
+                        @endif
+                    @endforeach
                 @else
-                    <li>
-                        <p>
-                            non ci sono progetti correlati
-                        </p>
-                    </li>
+
+                        <li>
+                            non ci sono repo correlate in realtà ci sono ma non riesco a visualizzarle perchè c'è il fottutissimo null
+                        </li>
+                    {{-- @foreach ($project['type_id => null']->projects as $rel_project)
+                        @if ($rel_project->name !== $project->name)
+                            <li>
+                                <a href="{{ route('admin.projects.show', $rel_project) }}">{{ $rel_project->name }}</a>
+                            </li>
+                        @endif
+                    @endforeach  --}}
                 @endif
             </ul>
         </div>
