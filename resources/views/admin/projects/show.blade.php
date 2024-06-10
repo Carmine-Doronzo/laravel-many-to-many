@@ -73,14 +73,16 @@
     <div class="container">
         <div class="row">
             <ul>
-                @if ($project->type !== null)
+                @if ($project->type !== null )
                 @foreach ($project->type->projects as $rel_project )
-
-                <li>
-                    <a href="{{route('admin.projects.show',$rel_project)}}">{{$rel_project->name}}</a>
-                </li>
+                    @if ($rel_project->name !== $project->name)
+                    <li>
+                        <a href="{{route('admin.projects.show',$rel_project)}}">{{$rel_project->name}}</a>
+                    </li>
+                    @endif    
+                @endforeach    
                     
-                @endforeach
+                
                 @else
                     <li>
                         <p>
