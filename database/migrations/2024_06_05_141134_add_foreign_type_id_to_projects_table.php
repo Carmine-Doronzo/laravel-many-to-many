@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('projects', function (Blueprint $table) {
             $table->unsignedBigInteger('type_id')->nullable();
-            $table->foreign('type_id')->references('id')->on('types')->onDelete('set null');
+            $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
 
             //alternativa ai metodi precedenti N.B solo se hai rispettato le convenzioni
             //$table->foreignId('type_id')->constrained();
